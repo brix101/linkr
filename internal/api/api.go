@@ -22,17 +22,13 @@ func New(ctx context.Context, pool *pgxpool.Pool) *api {
 }
 
 func (a *api) Server(port string) *http.Server {
-	return &http.Server{
-		Addr:    fmt.Sprintf(":%s", port),
-		Handler: a.loadRoutes(),
-	}
-}
-
-func (a *api) loadRoutes() http.Handler {
 	r := http.NewServeMux()
 
 	r.HandleFunc("/{code}", a.getLink)
-	r.HandleFunc("POST /link", a.createLink)
+	r.HandleFunc("POST /links", a.createLink)
 
-	return r
+	return &http.Server{
+		Addr:    fmt.Sprintf(":%s", port),
+		Handler: r,
+	}
 }
